@@ -1,10 +1,7 @@
 package cn.exceptioncode;
 
-import java.security.Principal;
-import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Flow;
-import java.util.concurrent.Future;
+import java.util.concurrent.*;
+import java.util.stream.IntStream;
 
 public class DockerXDemoPublisher<T> implements Flow.Publisher<T>, AutoCloseable {
     private final ExecutorService executor;
@@ -14,9 +11,23 @@ public class DockerXDemoPublisher<T> implements Flow.Publisher<T>, AutoCloseable
         this.executor = executor;
     }
 
+
+    public void submit(T item) {
+        System.out.println("********* 开始发布元素 item: " + item + "*********");
+        list.forEach(e -> {
+            e.future = executor.submit(() -> {
+                e.subscriber.onNext(item);
+            });
+        });
+    }
+
     @Override
     public void close() throws Exception {
-
+        list.forEach(e -> {
+            e.future = executor.submit(() -> {
+                e.subscriber.onComplete();
+            });
+        });
 
     }
 
@@ -67,8 +78,21 @@ public class DockerXDemoPublisher<T> implements Flow.Publisher<T>, AutoCloseable
         }
     }
 
-    private static  void demoSubscribe(DockerXDemoPublisher<Integer> publisher,String subscriberName){
+    private static void demoSubscribe(DockerXDemoPublisher<Integer> publisher, String subscriberName) {
+        DockerXDemoSubscriber<Integer> subscriber = new DockerXDemoSubscriber(subscriberName, 4l);
+        publisher.subscribe(subscriber);
+    }
 
+    public static void main(String[] args) throws Exception {
+        ExecutorService executorService = ForkJoinPool.commonPool();
+        try (DockerXDemoPublisher<Integer> publisher = new DockerXDemoPublisher<>(executorService)) {
+            demoSubscribe(publisher, "One");
+            demoSubscribe(publisher, "Two");
+            demoSubscribe(publisher, "Three");
+            IntStream.range(1, 5).forEach(publisher::submit);
+        } finally {
+
+        }
     }
 
 
