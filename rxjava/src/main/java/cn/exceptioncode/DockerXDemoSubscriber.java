@@ -22,6 +22,7 @@ public class DockerXDemoSubscriber<T> implements Flow.Subscriber<T> {
         this.bufferSize = bufferSize;
     }
 
+    @Override
     public void onSubscribe(Flow.Subscription subscription) {
         (this.subscription = subscription).request(bufferSize);
         System.out.println("开始 onSubscribe 订阅");
@@ -33,8 +34,10 @@ public class DockerXDemoSubscriber<T> implements Flow.Subscriber<T> {
 
     }
 
+    @Override
     public void onNext(Object item) {
-        System.out.printf("%s %s name: %s item: %s %s","#####",name,item);
+        System.out.printf("%s %s name: %s item: %s %s"+System.lineSeparator(),"#####",Thread.currentThread().getName(),
+                name,item,"######");
         System.out.println(name+" received: "+ item);
         try{
             Thread.sleep(10);
@@ -44,10 +47,12 @@ public class DockerXDemoSubscriber<T> implements Flow.Subscriber<T> {
 
     }
 
+    @Override
     public void onError(Throwable throwable) {
         throwable.printStackTrace();
     }
 
+    @Override
     public void onComplete() {
         System.out.println("Completed");
     }
