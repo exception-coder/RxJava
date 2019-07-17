@@ -4,6 +4,11 @@ import java.util.List;
 import java.util.concurrent.*;
 import java.util.stream.IntStream;
 
+/**
+ *
+ *
+ * @param <T>
+ */
 public class DockerXDemoPublisher<T> implements Flow.Publisher<T>, AutoCloseable {
     private final ExecutorService executor;
     private CopyOnWriteArrayList<DockerXDemoSubscription> list = new CopyOnWriteArrayList();
