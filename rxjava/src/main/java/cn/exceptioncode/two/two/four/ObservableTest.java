@@ -5,7 +5,6 @@ import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
-import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 
 import java.math.BigInteger;
@@ -19,7 +18,6 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @author 泡泡熊
  * @date 2019/7/21 3:46
  */
-@Slf4j
 public class ObservableTest {
 
     @Test

@@ -1,4 +1,4 @@
-package cn.exceptioncode;
+package cn.exceptioncode.Java9响应式编程入门Demo;
 
 import java.util.List;
 import java.util.concurrent.*;
@@ -89,6 +89,8 @@ public class DockerXDemoPublisher<T> implements Flow.Publisher<T>, AutoCloseable
     private static void demoSubscribe(DockerXDemoPublisher<Integer> publisher, String subscriberName) {
         // 创建一个消费者
         DockerXDemoSubscriber<Integer> subscriber = new DockerXDemoSubscriber(subscriberName, 4l);
+        // 调用消费者的 onSubscribe 方法，传递 Subscription
+        // list 集合中添加一个 subscription
         publisher.subscribe(subscriber);
     }
 
