@@ -20,7 +20,7 @@
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.12</version>
-      <!--      <scope>test</scope>-->
+            <!--      <scope>test</scope>-->
         </dependency>
 
 
@@ -30,31 +30,6 @@
             <artifactId>rxjava</artifactId>
             <version>2.2.10</version>
         </dependency>
-
-
-    </dependencies>
-
-    <properties>
-        <maven.compiler.source>1.9</maven.compiler.source>
-        <maven.compiler.target>1.9</maven.compiler.target>
-    </properties>
-
-    <dependencies>
-        <!-- JUnit is a unit testing framework for Java, created by Erich Gamma and Kent Beck. -->
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.12</version>
-        </dependency>
-
-
-        <!-- Reactive Extensions for Java -->
-        <dependency>
-            <groupId>io.reactivex.rxjava2</groupId>
-            <artifactId>rxjava</artifactId>
-            <version>2.2.10</version>
-        </dependency>
-
 
         <!-- Spice up your java: Automatic Resource Management, automatic generation of getters, setters, equals, hashCode and toString, and more! -->
         <dependency>
@@ -69,8 +44,6 @@
             <artifactId>slf4j-log4j12</artifactId>
             <version>2.0.0-alpha0</version>
         </dependency>
-
-
 
 
     </dependencies>
