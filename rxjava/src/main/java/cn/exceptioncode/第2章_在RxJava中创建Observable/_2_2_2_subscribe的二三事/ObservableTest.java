@@ -3,9 +3,9 @@ package cn.exceptioncode.第2章_在RxJava中创建Observable._2_2_2_subscribe�
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
-import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
+import io.reactivex.observables.ConnectableObservable;
 import org.junit.Test;
 
 import java.math.BigInteger;
@@ -138,9 +138,9 @@ public class ObservableTest {
             System.out.println(Thread.currentThread().getName() + " 观察者2 " + data.toString());
         });
 
-        try{
+        try {
             TimeUnit.MILLISECONDS.sleep(5000);
-        }catch (InterruptedException e){
+        } catch (InterruptedException e) {
             e.printStackTrace();
         }
 
@@ -148,11 +148,80 @@ public class ObservableTest {
         disposable2.dispose();
         System.out.println("我取消了订阅");
 
-        try{
+        try {
             TimeUnit.MILLISECONDS.sleep(5000);
             System.out.println("程序结束");
-        }catch (InterruptedException e){
+        } catch (InterruptedException e) {
             e.printStackTrace();
         }
+    }
+
+
+    @Test
+    public void infinitePublishTest() {
+        ConnectableObservable<Object> observable = Observable.create(observer -> {
+            BigInteger i = BigInteger.ZERO;
+            while (true) {
+                observer.onNext(i);
+                i = i.add(BigInteger.ONE);
+            }
+        }).publish();
+
+        observable.subscribe(data -> {
+            System.out.println(Thread.currentThread().getName() + " 观察者1 " + data.toString());
+        });
+
+        observable.connect();
+    }
+
+    @Test
+    public void hotPublishTest() {
+        ConnectableObservable<Object> observable = Observable.create(observer -> {
+            System.out.println("Establishing connection");
+            observer.onNext("处理的数字是："+Math.random() * 100);
+            observer.onNext("处理的数字是："+Math.random() * 100);
+        }).publish();
+
+        observable.subscribe(data -> {
+            System.out.println(Thread.currentThread().getName() + " 观察者1 " + data.toString());
+        });
+
+        observable.subscribe(data -> {
+            System.out.println(Thread.currentThread().getName() + " 观察者2 " + data.toString());
+        });
+
+        // 执行后触发 元素下发动作
+        observable.connect();
+
+
+       Observable<Object> observableCache = Observable.create(observer -> {
+            System.out.println("Establishing cache");
+            observer.onNext("处理的数字是："+Math.random() * 100);
+            observer.onNext("处理的数字是："+Math.random() * 100);
+        }).cache();
+
+
+        observableCache.subscribe(data -> {
+            System.out.println(Thread.currentThread().getName() + " 观察者1 " + data.toString());
+        });
+
+        observableCache.subscribe(data -> {
+            System.out.println(Thread.currentThread().getName() + " 观察者2 " + data.toString());
+        });
+
+        /**
+         *
+         * 执行结果
+         *
+         *
+         * Establishing connection
+         * main 观察者1 处理的数字是：86.30800537905216
+         * main 观察者2 处理的数字是：86.30800537905216
+         * main 观察者1 处理的数字是：91.28587658232999
+         * main 观察者2 处理的数字是：91.28587658232999
+         *
+         *
+         *
+         */
     }
 }
