@@ -9,6 +9,9 @@ import io.reactivex.observables.ConnectableObservable;
 import org.junit.Test;
 
 import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.TimeUnit;
 
 public class ObservableTest {
@@ -178,8 +181,8 @@ public class ObservableTest {
     public void hotPublishTest() {
         ConnectableObservable<Object> observable = Observable.create(observer -> {
             System.out.println("Establishing connection");
-            observer.onNext("处理的数字是："+Math.random() * 100);
-            observer.onNext("处理的数字是："+Math.random() * 100);
+            observer.onNext("处理的数字是：" + Math.random() * 100);
+            observer.onNext("处理的数字是：" + Math.random() * 100);
         }).publish();
 
         observable.subscribe(data -> {
@@ -194,10 +197,10 @@ public class ObservableTest {
         observable.connect();
 
 
-       Observable<Object> observableCache = Observable.create(observer -> {
+        Observable<Object> observableCache = Observable.create(observer -> {
             System.out.println("Establishing cache");
-            observer.onNext("处理的数字是："+Math.random() * 100);
-            observer.onNext("处理的数字是："+Math.random() * 100);
+            observer.onNext("处理的数字是：" + Math.random() * 100);
+            observer.onNext("处理的数字是：" + Math.random() * 100);
         }).cache();
 
 
@@ -215,13 +218,38 @@ public class ObservableTest {
          *
          *
          * Establishing connection
-         * main 观察者1 处理的数字是：86.30800537905216
-         * main 观察者2 处理的数字是：86.30800537905216
-         * main 观察者1 处理的数字是：91.28587658232999
-         * main 观察者2 处理的数字是：91.28587658232999
+         * main 观察者1 处理的数字是：17.29718725387648
+         * main 观察者2 处理的数字是：17.29718725387648
+         * main 观察者1 处理的数字是：22.681275184907935
+         * main 观察者2 处理的数字是：22.681275184907935
+         * Establishing cache
+         * main 观察者1 处理的数字是：21.28246197597582
+         * main 观察者1 处理的数字是：63.261941093132826
+         * main 观察者2 处理的数字是：21.28246197597582
+         * main 观察者2 处理的数字是：63.261941093132826
          *
          *
          *
          */
+    }
+
+
+    @Test
+    public void ForkJoinPoolCommonPoolTest() throws InterruptedException {
+        List<Integer> integers = new ArrayList<>(10);
+        for (int i = 1; i < 10; i++) {
+            integers.add(i);
+        }
+        ForkJoinPool commonPool = ForkJoinPool.commonPool();
+
+        integers.forEach(id -> commonPool.submit(() -> {
+            System.out.println(Thread.currentThread().getName()+":"+id);
+        }));
+
+        integers.forEach(id -> commonPool.submit(() -> {
+            System.out.println(Thread.currentThread().getName()+":"+id);
+        }));
+
+        Thread.sleep(15*1000);
     }
 }
