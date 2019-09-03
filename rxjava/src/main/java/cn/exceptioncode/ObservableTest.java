@@ -1,4 +1,4 @@
-package cn.exceptioncode.第2章_在RxJava中创建Observable._2_2_2_subscribe的二三事;
+package cn.exceptioncode;
 
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class ObservableTest {
 
@@ -204,6 +205,7 @@ public class ObservableTest {
         }).cache();
 
 
+
         observableCache.subscribe(data -> {
             System.out.println(Thread.currentThread().getName() + " 观察者1 " + data.toString());
         });
@@ -242,8 +244,9 @@ public class ObservableTest {
         }
         ForkJoinPool commonPool = ForkJoinPool.commonPool();
 
+        AtomicInteger atomicInteger = new AtomicInteger(integers.size());
         integers.forEach(id -> commonPool.submit(() -> {
-            System.out.println(Thread.currentThread().getName()+":"+id);
+            System.out.println("线程名称："+Thread.currentThread().getName()+"，元素："+id+",剩余操作数:"+atomicInteger.decrementAndGet());
         }));
 
         integers.forEach(id -> commonPool.submit(() -> {
@@ -252,4 +255,5 @@ public class ObservableTest {
 
         Thread.sleep(15*1000);
     }
+
 }

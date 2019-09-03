@@ -1,4 +1,4 @@
-package cn.exceptioncode.two.two;
+package cn.exceptioncode;
 
 import java.math.BigInteger;
 import java.util.Iterator;
