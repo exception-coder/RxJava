@@ -22,7 +22,7 @@ public class ObservableApiTest {
         System.out.println("==========================================================================================");
         int id = new Random().nextInt(100);
         System.out.println(id);
-        Observable.just(1L, 2L, 3L, 4L, 5L, 6l, 7l, 8l, 9l, 10l).map(item -> {
+        Observable.just(1L, 2L, 3L, 4L, 5L, 6L, 7L, 8L, 9L, 10L).map(item -> {
             if ((id % 2) == 1) {
                 return item;
             } else {
