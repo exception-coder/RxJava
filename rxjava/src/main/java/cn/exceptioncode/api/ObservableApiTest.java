@@ -7,7 +7,7 @@ import java.util.Random;
 
 public class ObservableApiTest {
 
-    private final String[] monthArray = {"Jan", "Feb", "Mar", "Apl", "Maly", "Jun", "July", "Aug", "Sept", "Oct", "Nov", "Dec"};
+    private final String[] monthArray = {"Jan", "Feb", "Mar", "Apl", "May", "Jun", "July", "Aug", "Sept", "Oct", "Nov", "Dec"};
 
     @Test
     public void tets() {
@@ -32,8 +32,36 @@ public class ObservableApiTest {
             System.out.println(bytes);
             return Observable.empty();
         }, e -> Observable.just(e.getMessage()), () -> Observable.just(id))
-        .subscribe(item -> System.out.println("we got: "+item.toString()+" from the Observable"),throwable -> System.out.println("异常 -> "+throwable.getMessage() ),()->System.out.println("Emission completed"));
+                .subscribe(item -> System.out.println("we got: " + item.toString() + " from the Observable"), throwable -> System.out.println("异常 -> " + throwable.getMessage()), () -> System.out.println("Emission completed"));
+    }
 
 
+    /**
+     *
+     * 分组操作
+     *
+     */
+    @Test
+    public void groupByTest() {
+        Observable.fromArray(monthArray).groupBy(item -> item.length() <= 3 ? "THREE"
+                : item.length() < 6 ? ">4" : "DEFAULT").subscribe(observable -> {
+            System.out.println("***************************************************************************************");
+            System.out.println(observable);
+            observable.subscribe(item ->
+                    System.out.println(Thread.currentThread().getName() + ":" + observable.getKey()+":"+item)
+            );
+        });
+    }
+
+    /**
+     *
+     * 数据源合并操作
+     *
+     */
+    @Test
+    public void mergTest(){
+        Observable.merge(Observable.range(1,5),Observable.range(10,3))
+                .subscribe(item -> System.out.println("we got: "+ item+" from the Observable"),
+                        throwable -> System.out.println(throwable.getMessage()),() -> System.out.println("Emission completed"));
     }
 }
